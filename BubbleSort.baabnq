@@ -1,0 +1,94 @@
+
+"here we have routine space:
+jump skip;
+
+
+"this subroutine will print a given list and size (as arg on the stack just like in init)
+lab printList;
+put _index = 0;
+
+pull _ReturnAddr;
+pull _printListPointer;
+pull _printSize;
+push _ReturnAddr;
+
+lab printLoop;
+put _data <- _printListPointer + _index;
+print _data;
+
+put _index = _index + 1;
+jump printLoop ~ _index != _printSize;
+return;
+
+
+
+
+
+
+
+
+
+lab sortList;
+pull _ReturnAddr;
+pull _sortListPointer;
+pull _sortListSize;
+push _ReturnAddr;
+
+"put _sortListSize = _sortListSize - 1;
+asm 'lDA (_sortListSize);set 1;sub;sAD (_sortListSize);';
+
+lab 0iter;
+put _SwapIndex = 0;
+put _Index = 0;
+
+lab listIter;
+
+put _DerefPointer1 <- _sortListPointer + _Index + 0;
+put _DerefPointer2 <- _sortListPointer + _Index + 1;
+
+sub swap ~ _DerefPointer1 > _DerefPointer2;
+
+"put _Index = _Index + 1;
+asm 'lDA (_Index);set 1;add;sAD (_Index);';
+jump listIter ~ _Index != _sortListSize;
+
+jump 0iter ~ _SwapIndex != 0;
+return;
+
+
+"this subroutine must be only called in context with sortList
+lab swap;
+"increment the swap index
+put _SwapIndex = _SwapIndex + 1;
+
+"now do the swaping itself
+put _DerefPointer1 -> _sortListPointer + _Index + 1;
+put _DerefPointer2 -> _sortListPointer + _Index + 0;
+return;
+
+lab skip;
+
+
+
+
+
+"construct list
+static 5 _listPtr;
+put 4 -> _listPtr;
+put 1 -> _listPtr + 1;
+put 3 -> _listPtr + 2;
+put 7 -> _listPtr + 3;
+put 22 -> _listPtr + 4;
+push 5;
+push _listPtr;
+
+"sort list
+sub sortList;
+
+"print result
+push 5;
+push _listPtr;
+sub printList;
+
+
+lab exit;
