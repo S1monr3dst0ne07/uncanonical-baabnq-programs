@@ -1,0 +1,34 @@
+asm '/ kill!@e[tag=tempObj]';
+asm '/ execute!at!@p!run!summon!minecraft:armor_stand!~!~!~!{Tags:["tempObj","base"],!NoGravity:1b,!Invisible:0b}';
+asm '/ execute!at!@p!run!summon!minecraft:armor_stand!~!~!~1!{Tags:["tempObj","cursor"],!NoGravity:1b,!Invisible:0b}';
+
+put _Index = 100;
+lab loop;
+    asm '/ execute!as!@e[tag=cursor]!at!@s!run!tp!@s!^3!^!^!facing!entity!@e[tag=base,limit=1]';
+    asm '/ execute!at!@e[tag=cursor]!run!summon!wolf!~!~!~!{NoAI:1b,!NoGravity:1b,!Invulnerable:1,!Owner:DataShibe,Tags:["dog"]}';
+
+    print _Index;
+    put _Index = _Index - 1;
+    jump loop ~ _Index > 0;
+
+asm '/ kill!@e[tag=tempObj]';
+put _FxIndex = 0;
+
+lab fx;
+    asm 'lDA (_FxIndex)';
+    asm '/ execute!as!@e[tag=dog]!store!result!entity!@s!Rotation[0]!float!4!run!scoreboard!players!get!Acc!s1asm';    
+
+    asm 'set 15';
+    asm 'and';
+    asm '/ execute!as!@e[tag=dog]!store!result!entity!@s!CollarColor!int!1!run!scoreboard!players!get!Acc!s1asm';
+    print _FxIndex;
+
+    put _FxIndex = _FxIndex + 1;
+    sub fx::reset ~ _FxIndex > 90;
+    asm '/ schedule!function!{name}:{fx}!1t';
+    asm 'brk';
+
+
+lab fx::reset;
+    put _FxIndex = 0;
+    return;

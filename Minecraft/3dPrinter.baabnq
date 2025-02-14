@@ -1,0 +1,85 @@
+asm '/ kill!@e[tag=scanner]';
+asm '/ execute!as!@e[tag=ref]!at!@s!run!summon!minecraft:armor_stand!~-0.5!~3!~-0.5!{Tags:["scanner"],!NoGravity:1b}';
+
+asm '/ kill!@e[tag=printer]';
+asm '/ execute!as!@e[tag=ref]!at!@s!run!summon!minecraft:armor_stand!~20!~2!~20!{Tags:["printer"],!NoGravity:1b}';
+
+
+put _refX = 0;
+put _refY = 0;
+put _refZ = 0;
+
+asm '/ execute!store!result!score!Acc!s1asm!run!data!get!entity!@e[tag=ref,limit=1]!Pos[0]!1';
+asm 'sAD (_refX)';
+asm '/ execute!store!result!score!Acc!s1asm!run!data!get!entity!@e[tag=ref,limit=1]!Pos[2]!1';
+asm 'sAD (_refY)';
+asm '/ execute!store!result!score!Acc!s1asm!run!data!get!entity!@e[tag=ref,limit=1]!Pos[1]!1';
+asm 'sAD (_refZ)';
+
+print _refX;
+print _refY;
+print _refZ;
+
+put _z = 0;
+lab zLoop;
+
+    put _y = 0;
+    lab yLoop;
+
+        put _x = 0;
+        lab xLoop;
+
+        asm '/ execute!at!@e[tag=scanner]!run!clone!~!~-1!~!~!~-1!~!0!0!0';
+        asm '/ execute!at!@e[tag=printer]!run!clone!0!0!0!0!0!0!~!~!~';
+
+        "axis 1
+        asm '/ execute!at!@e[tag=printer]!run!clone!~!~!~!~0!~!~!~1!~!~';
+        asm '/ execute!at!@e[tag=printer]!run!clone!~!~!~!~1!~!~!~2!~!~';
+        asm '/ execute!at!@e[tag=printer]!run!clone!~!~!~!~3!~!~!~4!~!~';
+        asm '/ execute!at!@e[tag=printer]!run!clone!~!~!~!~7!~!~!~8!~!~';
+        "axis 2
+        asm '/ execute!at!@e[tag=printer]!run!clone!~!~!~!~15!~!~0!~!~!~1';
+        asm '/ execute!at!@e[tag=printer]!run!clone!~!~!~!~15!~!~1!~!~!~2';
+        asm '/ execute!at!@e[tag=printer]!run!clone!~!~!~!~15!~!~3!~!~!~4';
+        asm '/ execute!at!@e[tag=printer]!run!clone!~!~!~!~15!~!~7!~!~!~8';
+        "axis 3
+        asm '/ execute!at!@e[tag=printer]!run!clone!~!~!~!~15!~0!~15!~!~1!~';
+        asm '/ execute!at!@e[tag=printer]!run!clone!~!~!~!~15!~1!~15!~!~2!~';
+        asm '/ execute!at!@e[tag=printer]!run!clone!~!~!~!~15!~3!~15!~!~4!~';
+        asm '/ execute!at!@e[tag=printer]!run!clone!~!~!~!~15!~7!~15!~!~8!~';
+        
+        put _x = _x + 1;
+        asm '/ execute!as!@e[tag=scanner]!at!@s!run!tp!~1!~!~';
+        asm '/ execute!as!@e[tag=printer]!at!@s!run!tp!~16!~!~';
+
+        jump xExit ~ _x == 10;
+        asm '/ schedule!function!{name}:{xLoop}!1t';
+        asm 'brk';
+        lab xExit;
+        asm '/ execute!as!@e[tag=scanner]!at!@s!run!tp!~-10!~!~';
+        asm '/ execute!as!@e[tag=printer]!at!@s!run!tp!~-160!~!~';
+
+
+    put _y = _y + 1;
+    asm '/ execute!as!@e[tag=scanner]!at!@s!run!tp!~!~!~1';
+    asm '/ execute!as!@e[tag=printer]!at!@s!run!tp!~!~!~16';
+
+    jump yExit ~ _y == 10;
+    asm '/ schedule!function!{name}:{yLoop}!1t';
+    asm 'brk';
+    lab yExit;
+    asm '/ execute!as!@e[tag=scanner]!at!@s!run!tp!~!~!~-10';
+    asm '/ execute!as!@e[tag=printer]!at!@s!run!tp!~!~!~-160';
+
+put _z = _z + 1;
+asm '/ execute!as!@e[tag=scanner]!at!@s!run!tp!~!~1!~';
+asm '/ execute!as!@e[tag=printer]!at!@s!run!tp!~!~16!~';
+
+jump zExit ~ _z == 10;
+asm '/ schedule!function!{name}:{zLoop}!1t';
+asm 'brk';
+lab zExit;
+asm '/ execute!as!@e[tag=scanner]!at!@s!run!tp!~!~-10!~';
+asm '/ execute!as!@e[tag=printer]!at!@s!run!tp!~!~-160!~';
+
+asm 'brk';

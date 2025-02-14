@@ -1,0 +1,29 @@
+asm '/ function!{name}:loadvid';
+
+"give ref to player
+asm '/ clear!@p!shulker_spawn_egg';
+asm '/ give!@p!shulker_spawn_egg{EntityTag:{id:"minecraft:shulker",Color:0,NoAI:1b,Glowing:1,NoGravity:1b,Health:0.5,Silent:1,!Tags:["ref"],!DeathLootTable:"minecraft:empty"},!display:{Name:"\"Reference\""},!Enchantments:[{id:"minecraft:sharpness",!lvl:1s}]}';
+
+"check for entity placement
+asm '/ execute!unless!entity!@e[tag=ref,limit=1]!run!say!Error:!Reference!not!found';
+
+put _size = 0;
+asm '/ execute!store!result!score!Acc!s1asm!run!data!get!storage!minecraft:video!data';
+asm 'sAD (_size)';
+
+print _size;
+
+put _index = 0;
+lab loop;
+    asm '/ execute!at!@e[tag=ref]!run!data!modify!block!~!~1!~!Book.tag.pages[0]!set!from!storage!minecraft:video!data[0]';
+    asm '/ data!remove!storage!minecraft:video!data[0]';
+
+    put _index = _index + 1;
+    jump exit ~ _index > _size;
+    asm '/ schedule!function!{name}:{loop}!1t';
+    asm 'brk';
+
+lab exit;    
+asm 'brk';
+
+

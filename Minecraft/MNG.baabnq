@@ -1,0 +1,210 @@
+"menger sponge fractal renderer
+
+"block placer
+asm '/ summon!minecraft:armor_stand!~!~!~!{Tags:["tmp"],!Invisible:1b,NoGravity:1b}';
+
+
+put _d = 243; "size of sponge, calc by 3**n
+put _i = 0;  "*demonic noises*
+put _gCount = 0;
+
+push _d;
+sub div3;
+sub div3;
+pull _d9;
+
+push _d;
+
+asm '/ execute!store!result!score!Acc!s1asm!run!data!get!entity!@e[tag=ref,limit=1]!Pos[0]!1';
+asm 'pha';
+asm '/ execute!store!result!score!Acc!s1asm!run!data!get!entity!@e[tag=ref,limit=1]!Pos[1]!1';
+asm 'pha';
+asm '/ execute!store!result!score!Acc!s1asm!run!data!get!entity!@e[tag=ref,limit=1]!Pos[2]!1';
+asm 'pha';
+
+sub mng;
+
+asm '/ kill!@e[tag=tmp]';
+asm 'brk';
+
+lab pd;
+    print _d;
+    return;
+
+lab div3;
+    pull __;
+    pull _num;
+
+    asm 'lDA (_num)';
+    asm 'set 3';
+    asm '/ scoreboard!players!operation!Acc!s1asm!/=!Reg!s1asm';
+    asm 'sAD (_num)';
+
+    push _num;
+    push 0;
+    return;
+
+"lab div3;
+"    pull __;
+"    pull _in;
+"    push _i;
+"
+"    put _i = 14;
+"    put _divisor = 3 << 14;
+"    put _acc = 0;
+"   
+"    lab div3::loop;
+"        "check if divisor can fit into _d
+"        jump div3::loop::skip ~ _divisor > _in;
+"            put _acc = _acc + (1 << _i);
+"            put _in = _in - _divisor;
+"
+"        lab div3::loop::skip;
+"        put _divisor = _divisor >> 1;
+"        put _i = _i - 1;
+"        jump div3::loop ~ _i + 1 > 0;
+"
+"    pull _i;
+"    push _acc;
+"    push 0;
+"    return;
+
+
+lab mng;
+    pull __; "ret addrs are completly virtual in mc
+    pull _Z;
+    pull _Y;
+    pull _X;
+
+    sub div3;
+    pull _size;
+
+    "print _size;
+    jump mng::exit ~ _size == 0;
+
+    "debug
+    jump mng::debug ~ _size != _d9;
+        print _gCount; "mng has 20 divs, meaning this should count to 20 (0 - 19)
+        put _gCount = _gCount + 1;
+    lab mng::debug;
+
+
+
+    push _size;
+    push _size;
+    push 0;
+    sub doSub;
+
+    push 0;
+    push _size;
+    push _size;
+    sub doSub;
+
+    push _size;
+    push _size;
+    push _size;
+    sub doSub;
+
+    push _size;
+    push _size;
+    push 0 - _size;
+    sub doSub;
+
+
+
+    push _size;
+    push 0 - _size;
+    push 0;
+    sub doSub;
+
+    push 0;
+    push 0 - _size;
+    push _size;
+    sub doSub;
+
+    push _size;
+    push 0 - _size;
+    push _size;
+    sub doSub;
+
+    push _size;
+    push 0 - _size;
+    push 0 - _size;
+    sub doSub;
+
+
+
+
+    push _size;
+    push 0;
+    push _size;
+    sub doSub;
+
+    push _size;
+    push 0;
+    push 0 - _size;
+    sub doSub;
+
+
+
+
+
+    push 0;
+    return;
+
+
+    lab mng::exit;
+        "print _X;
+        "print _Y;
+        "print _Z;
+        
+        asm 'lDA (_X)';
+        asm '/ execute!as!@e[tag=tmp]!store!result!entity!@s!Pos[0]!double!1!run!scoreboard!players!get!Acc!s1asm';
+        asm 'lDA (_Y)';
+        asm '/ execute!as!@e[tag=tmp]!store!result!entity!@s!Pos[1]!double!1!run!scoreboard!players!get!Acc!s1asm';
+        asm 'lDA (_Z)';
+        asm '/ execute!as!@e[tag=tmp]!store!result!entity!@s!Pos[2]!double!1!run!scoreboard!players!get!Acc!s1asm';
+
+        asm '/ execute!at!@e[tag=tmp]!run!setblock!~!~!~!stone';
+
+        push 0;
+        return;
+
+
+
+lab doSub;
+    pull __;
+    pull _offZ;
+    pull _offY;
+    pull _offX;
+
+    "save
+    push _X;
+    push _Y;
+    push _Z;
+    push _size;
+
+    "frame 1
+    push _size;
+    push _X + _offX;
+    push _Y + _offY;
+    push _Z + _offZ;
+
+    "frame 2
+    push _size;
+    push _X - _offX;
+    push _Y - _offY;
+    push _Z - _offZ;
+
+    "subs
+    sub mng;
+    sub mng;
+
+    "restore
+    pull _size;
+    pull _Z;
+    pull _Y;
+    pull _X;
+
+    push 0;
+    return;

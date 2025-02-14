@@ -1,0 +1,12 @@
+
+put _index = 100;
+lab loop;
+    asm 'lDA (_index)';
+    asm '/ execute!store!result!entity!@e[tag=map,limit=1]!Item.tag.map!int!1!run!scoreboard!players!get!Acc!s1asm';
+
+    print _index;
+
+    put _index = _index + 1;
+    asm '/ schedule!function!{name}:{loop}!1t';
+    asm 'brk';
+

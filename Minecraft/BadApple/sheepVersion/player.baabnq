@@ -1,0 +1,49 @@
+
+asm '/ give!@a!minecraft:sheep_spawn_egg{EntityTag:{Tags:["disSheep"]}}';
+
+asm '/ scoreboard!objectives!add!frameBuffer!dummy';
+asm '/ function!{name}:loadvid';
+asm '/ kill!@e[tag=pixel]';
+asm '/ execute!as!@e[tag=ref]!at!@s!run!summon!minecraft:armor_stand!~!~1!~!{Tags:["cursor"]}';
+
+put _IndexY = 0;
+lab LoopY;
+
+    put _IndexX = 0;
+    lab LoopX;
+        "summon new pixel        
+        asm '/ execute!as!@e[tag=cursor]!at!@s!run!summon!minecraft:armor_stand!~!~!~!{Tags:["pixel"],HandItems:[{id:"minecraft:stone",Count:1b,tag:{data:[]}},{}]}';
+        
+        "put frame data into pixel's handitem for savekeeping
+        asm '/ execute!as!@e[tag=cursor,limit=1]!at!@s!run!data!modify!entity!@e[tag=pixel,limit=1,sort=nearest]!HandItems[0].tag.data!set!from!storage!minecraft:video!binary[0]';
+        asm '/ data!remove!storage!minecraft:video!binary[0]';
+
+        "move cursor to next position
+        asm '/ execute!as!@e[tag=cursor]!at!@s!run!tp!@e[tag=cursor]!~!~!~1';
+
+    put _IndexX = _IndexX + 1;
+    jump LoopX ~ _IndexX < 32;
+    asm '/ execute!as!@e[tag=cursor]!at!@s!run!tp!@e[tag=cursor]!~1!~!~-32';
+
+put _IndexY = _IndexY + 1;
+jump LoopY ~ _IndexY < 32;
+
+asm '/ kill!@e[tag=cursor]';
+
+put _test = 0;
+lab MainLoop;
+    asm '/ execute!as!@e[tag=ref]!at!@s!run!fill!~!~3!~!~31!~3!~31!minecraft:black_concrete';
+    asm '/ execute!as!@e[tag=pixel]!at!@s!store!result!score!@s!frameBuffer!run!data!get!entity!@s!HandItems[0].tag.data[0]';
+    asm '/ execute!as!@e[tag=pixel]!at!@s!run!data!remove!entity!@s!HandItems[0].tag.data[0]';
+    asm '/ execute!as!@e[tag=pixel]!at!@s!if!score!@s!frameBuffer!matches!1!run!setblock!~!~2!~!minecraft:white_concrete';
+
+    "sheeps
+    asm '/ execute!as!@e[tag=disSheep]!at!@s!if!block!~!~-1!~!minecraft:white_concrete!run!data!modify!entity!@s!Color!set!value!0';
+    asm '/ execute!as!@e[tag=disSheep]!at!@s!if!block!~!~-1!~!minecraft:black_concrete!run!data!modify!entity!@s!Color!set!value!15';
+
+
+    print _test;
+    put _test = _test + 1;
+
+    asm '/ schedule!function!{name}:{MainLoop}!1t';
+    asm 'brk';

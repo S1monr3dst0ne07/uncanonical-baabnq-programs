@@ -1,0 +1,133 @@
+
+use 'libs/stack.baabnq';
+
+"give ref to player
+asm '/ clear!@p!shulker_spawn_egg';
+asm '/ give!@p!shulker_spawn_egg{EntityTag:{id:"minecraft:shulker",Color:0,NoAI:1b,Glowing:1,NoGravity:1b,Health:0.5,Silent:1,!Tags:["ref"],!DeathLootTable:"minecraft:empty"},!display:{Name:"\"Reference\""},!Enchantments:[{id:"minecraft:sharpness",!lvl:1s}]}';
+
+"check for entity placement
+asm '/ execute!unless!entity!@e[tag=ref,limit=1]!run!say!Error:!Reference!not!found';
+
+
+jump Screen::Skip;
+
+lab Screen::Init;
+    asm '/ kill!@e[tag=cursor]';
+    asm '/ execute!as!@e[tag=ref]!at!@s!run!fill!~!~1!~-10!~!~11!~10!minecraft:black_concrete';
+    asm '/ execute!as!@e[tag=ref,limit=1]!at!@s!run!summon!minecraft:armor_stand!~-1!~11!~-10!{NoGravity:1b,!Tags:["cursor"],Invisible:1b}';
+    asm '/ schedule!function!{name}:{Screen::CursorOn}!10t';
+
+    return;
+
+lab Screen::Clear;
+    asm '/ execute!as!@e[tag=ref]!at!@s!run!fill!~-1!~1!~-10!~-1!~11!~10!minecraft:air';
+    return;
+
+"handle cursor blinking
+lab Screen::CursorOn;
+    asm '/ execute!as!@e[tag=cursor,limit=1]!at!@s!run!setblock!~!~-1!~!minecraft:white_carpet';
+    asm '/ schedule!function!{name}:{Screen::CursorOff}!10t';
+    asm 'brk';
+
+lab Screen::CursorOff;
+    asm '/ execute!as!@e[tag=cursor,limit=1]!at!@s!run!setblock!~!~-1!~!minecraft:air';
+    asm '/ schedule!function!{name}:{Screen::CursorOn}!10t';
+    asm 'brk';
+
+lab Screen::CursorStop;
+    asm '/ schedule!clear!{name}:{Screen::CursorOn}';
+    asm '/ schedule!clear!{name}:{Screen::CursorOff}';
+    return;
+
+
+lab Screen::Char;
+    sub Stack::Swap;
+    pull _Data;
+    asm '
+lDA (_Data);
+/ execute!store!result!score!display!s1asm!run!scoreboard!players!get!Acc!s1asm;
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!run!setblock!~!~!~!minecraft:air;
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!0!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:rs,Color:5},{Pattern:ls,Color:5},{Pattern:ms,Color:5},{Pattern:ts,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!1!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:rs,Color:5},{Pattern:bs,Color:5},{Pattern:ts,Color:5},{Pattern:cbo,Color:15},{Pattern:ls,Color:5},{Pattern:ms,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!2!run!setblock!~!~!~!minecraft:lime_wall_banner[facing=west]{Patterns:[{Pattern:mr,Color:15},{Pattern:rs,Color:5},{Pattern:cbo,Color:15},{Pattern:vh,Color:5},{Pattern:ms,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!3!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:ts,Color:5},{Pattern:bs,Color:5},{Pattern:rs,Color:5},{Pattern:ms,Color:15},{Pattern:ls,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!4!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:rs,Color:5},{Pattern:bs,Color:5},{Pattern:ts,Color:5},{Pattern:cbo,Color:15},{Pattern:ls,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!5!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:ls,Color:5},{Pattern:ts,Color:5},{Pattern:ms,Color:5},{Pattern:bs,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!6!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:ms,Color:5},{Pattern:rs,Color:15},{Pattern:ts,Color:5},{Pattern:ls,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!7!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:rs,Color:5},{Pattern:hh,Color:15},{Pattern:bs,Color:5},{Pattern:ls,Color:5},{Pattern:ts,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!8!run!setblock!~!~!~!minecraft:lime_wall_banner[facing=west]{Patterns:[{Pattern:ts,Color:15},{Pattern:bs,Color:15},{Pattern:ls,Color:5},{Pattern:rs,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!9!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:cs,Color:5},{Pattern:ts,Color:5},{Pattern:bs,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!10!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:ls,Color:5},{Pattern:hh,Color:15},{Pattern:bs,Color:5},{Pattern:rs,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!11!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:drs,Color:5},{Pattern:hh,Color:15},{Pattern:dls,Color:5},{Pattern:ls,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!12!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:bs,Color:5},{Pattern:ls,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!13!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:tt,Color:5},{Pattern:tts,Color:15},{Pattern:ls,Color:5},{Pattern:rs,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!14!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:ls,Color:5},{Pattern:tt,Color:15},{Pattern:drs,Color:5},{Pattern:rs,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!15!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:ls,Color:5},{Pattern:rs,Color:5},{Pattern:bs,Color:5},{Pattern:ts,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!16!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:rs,Color:5},{Pattern:hhb,Color:15},{Pattern:ms,Color:5},{Pattern:ts,Color:5},{Pattern:ls,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!17!run!setblock!~!~!~!minecraft:lime_wall_banner[facing=west]{Patterns:[{Pattern:mr,Color:15},{Pattern:rs,Color:5},{Pattern:ls,Color:5},{Pattern:br,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!18!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:hh,Color:5},{Pattern:cs,Color:15},{Pattern:ts,Color:5},{Pattern:ls,Color:5},{Pattern:drs,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!19!run!setblock!~!~!~!minecraft:lime_wall_banner[facing=west]{Patterns:[{Pattern:mr,Color:15},{Pattern:ms,Color:15},{Pattern:drs,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!20!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:ts,Color:5},{Pattern:cs,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!21!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:bs,Color:5},{Pattern:ls,Color:5},{Pattern:rs,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!22!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:dls,Color:5},{Pattern:ls,Color:5},{Pattern:bt,Color:15},{Pattern:dls,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!23!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:bt,Color:5},{Pattern:bts,Color:15},{Pattern:ls,Color:5},{Pattern:rs,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!24!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:cr,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!25!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:drs,Color:5},{Pattern:hhb,Color:15},{Pattern:dls,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!26!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west]{Patterns:[{Pattern:ts,Color:5},{Pattern:dls,Color:5},{Pattern:bs,Color:5},{Pattern:bo,Color:15}]};
+/ execute!rotated!as!@p!as!@e[tag=cursor,limit=1]!at!@s!if!score!display!s1asm!matches!32!run!setblock!~!~!~!minecraft:black_wall_banner[facing=west];
+    ';
+    return;
+
+lab Screen::Put;
+    sub Stack::Swap;
+
+    "clear chat
+    asm '/ execute!as!@e[tag=cursor,limit=1]!at!@s!run!setblock!~!~-1!~!minecraft:air';
+
+    pull _Data;
+    jump Screen::Put::Exit ~ _Data == 0;
+    jump Screen::Put::LowerCase ~ _Data > 96;
+    jump Screen::Put::UpperCase ~ _Data > 64;
+    push _Data;
+    lab Screen::Put::CaseReturn;
+
+    sub Screen::Char;
+    asm '/ execute!as!@e[tag=cursor,limit=1]!at!@s!run!tp!~!~!~1';    
+    lab Screen::Put::Exit;
+    return;
+
+
+    lab Screen::Put::LowerCase;
+        push _Data - 96;
+        jump Screen::Put::CaseReturn;
+    lab Screen::Put::UpperCase;
+        push _Data - 64;
+        jump Screen::Put::CaseReturn;
+
+lab Screen::Demo;
+    sub Screen::Init;
+    sub Screen::Clear;
+    static 'hello world' _Ptr;
+
+    lab Screen::Demo::Loop;
+        put _Data <- _Ptr;
+        "print _Data;
+        put _Ptr = _Ptr + 1;
+        push _Data;
+        sub Stack::Dup;
+        sub Screen::Put;
+        pull _Data;
+    jump Screen::Demo::ReSch ~ _Data != 0;
+
+    sub Screen::CursorStop;
+    return; 
+
+    lab Screen::Demo::ReSch;
+        asm '/ schedule!function!{name}:{Screen::Demo::Loop}!1t';
+        asm 'brk';
+
+lab Screen::Skip;
+
+sub Screen::Demo;
+
+
