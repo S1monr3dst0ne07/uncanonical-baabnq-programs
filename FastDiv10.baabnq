@@ -1,0 +1,69 @@
+use 'libs/stack.baabnq';
+
+
+lab FastDiv10;
+    asm '
+    jmS Stack::Swap;
+
+    "n is on stack
+    pla;
+    sAD -n;
+
+    "put _q = (_n >> 1) + (_n >> 2);
+    shs;
+    sAD -tmp;
+    lDR -tmp;
+    shs;
+    add;
+    sAD -q;
+
+    "put _q = _q + (_q >> 4);
+    lDA -q;
+    shs; shs; shs; shs;
+    lDR -q;
+    add;
+    sAD -q;
+
+    "put _q = _q + (_q >> 8);
+    lDA -q;
+    shs; shs; shs; shs;
+    shs; shs; shs; shs;
+    lDR -q;
+    add;
+
+    "put _q = _q >> 3;
+    shs; shs; shs;
+    sAD -q;
+
+    "r = n - q*10
+    "put _r = _n - (_q << 3) - (_q << 1);
+    lDA -q;
+    shg;
+    sAD -q1;
+    shg;
+    shg;
+    sAD -q3;
+
+    lDA -n;
+    lDR -q3;
+    sub;
+    lDR -q1;
+    sub;
+    
+    pha;
+    jmS Stack::Swap;
+
+
+    "put _n =  _q + ((_r + 6) >> 4);
+    set 6;
+    add;
+    shs; shs; shs; shs;
+    
+    lDR -q;
+    add;
+
+    pha;
+    jmS Stack::Swap;
+    ';
+
+    return;
