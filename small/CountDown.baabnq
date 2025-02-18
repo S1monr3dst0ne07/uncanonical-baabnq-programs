@@ -1,0 +1,99 @@
+use 'libs/string.baabnq';
+
+new 'Seconds: ' _SecStr;
+new 'Minutes: ' _MinStr;
+new 'Hours  : ' _HourStr;
+new 'Days   : ' _DayStr;
+new 'Month  : ' _MonthStr;
+new 'Time remaining\n' _TitleStr;
+new '*\n' _ScanlineStr;
+
+
+push _TitleStr;
+sub String::GetSize;
+pull _TitleSize;
+
+put _IndentLevel = 2;
+put _ScanlineSize = _IndentLevel + _IndentLevel + _TitleSize;
+
+put _UpperScanlineIndex = 0;
+put _LowerScanlineIndex = _ScanlineSize;
+
+lab Loop;
+asm 'plugin Terminal::Cls';
+
+
+
+asm 'plugin Time::Sec';
+pull _Sec;
+
+asm 'plugin Time::Min';
+pull _Min;
+
+asm 'plugin Time::Hour';
+pull _Hour;
+
+asm 'plugin Time::Day';
+pull _Day;
+
+asm 'plugin Time::Month';
+pull _Month;
+
+"render upper scanline
+push _UpperScanlineIndex;
+sub PrintIndent;
+jump UpperResetSkip ~ _UpperScanlineIndex != _ScanlineSize;
+put _UpperScanlineIndex = 0 - 1;
+lab UpperResetSkip;
+put _UpperScanlineIndex = _UpperScanlineIndex + 1;
+push _ScanlineStr; sub String::PrintString;
+
+"push indent level for all PrintIndex calls
+push _IndentLevel; push _IndentLevel; push _IndentLevel; push _IndentLevel; push _IndentLevel; push _IndentLevel;
+
+sub PrintIndent; push _TitleStr; sub String::PrintString;
+sub PrintIndent; push _SecStr;   sub String::PrintString; print 59 - _Sec;
+sub PrintIndent; push _MinStr;   sub String::PrintString; print 59 - _Min;
+sub PrintIndent; push _HourStr;  sub String::PrintString; print 23 - _Hour;
+sub PrintIndent; push _DayStr;   sub String::PrintString; print 31 - _Day;
+sub PrintIndent; push _MonthStr; sub String::PrintString; print 12 - _Month;
+
+
+
+"render upper scanline
+push _LowerScanlineIndex;
+sub PrintIndent;
+jump LowerResetSkip ~ _LowerScanlineIndex != 0;
+put _LowerScanlineIndex = _ScanlineSize + 1;
+lab LowerResetSkip;
+put _LowerScanlineIndex = _LowerScanlineIndex - 1;
+push _ScanlineStr; sub String::PrintString;
+
+
+
+
+push 50;
+asm 'plugin Time::SleepMs';
+
+
+
+jump Loop;
+
+
+
+
+"Takes indent level (from stack) and print that many spaces
+lab PrintIndent;
+pull _ReturnAddr;
+pull _Temp;
+push _ReturnAddr;
+
+lab PrintIndent::Loop;
+putchr 32;
+
+jump PrintIndent::Exit ~ _Temp == 0;
+put _Temp = _Temp - 1;
+jump PrintIndent::Loop;
+lab PrintIndent::Exit;
+
+return;
