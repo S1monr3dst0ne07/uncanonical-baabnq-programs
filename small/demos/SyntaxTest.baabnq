@@ -1,0 +1,6 @@
+
+lab start;
+ new 'stupid indent' _ptr;
+use 'libs/string.baabnq';
+push _ptr;
+sub String::PrintString;

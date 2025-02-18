@@ -1,0 +1,66 @@
+jump skip;
+
+
+lab PrintMem;
+pull _ReturnAddr;
+pull _PrintRangeOffset;
+pull _PrintBasePtr;
+push _ReturnAddr;
+
+put _Index = 0;
+
+lab PrintMem::Loop;
+put _Data <- _Index + _PrintBasePtr;
+print _Data;
+put _Index = _Index + 1;
+jump PrintMem::Loop ~ _Index < _PrintRangeOffset;
+
+return;
+
+
+
+lab AllocTest;
+input _Size;
+new _Size _Ptr;
+return;
+
+
+
+lab skip;
+
+
+sub AllocTest;
+put _Ptr1 = _Ptr;
+
+sub AllocTest;
+put _Ptr2 = _Ptr;
+
+put 25 -> _Ptr1 + 0;
+put 26 -> _Ptr1 + 1;
+put 27 -> _Ptr1 + 2;
+
+
+
+print _Ptr1;
+print _Ptr2;
+
+push _Ptr1 - 1;
+push 10;
+sub PrintMem;
+
+free _Ptr1;
+
+putchr 10;
+push _Ptr1 - 1;
+push 10;
+sub PrintMem;
+
+
+sub AllocTest;
+put _Ptr3 = _Ptr;
+
+putchr 10;
+push _Ptr1 - 1;
+push 20;
+sub PrintMem;
+

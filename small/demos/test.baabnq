@@ -1,0 +1,6 @@
+
+put _a = 10;
+put _b = 5;
+put _c = 15;
+
+print (_a + _b) - _c;

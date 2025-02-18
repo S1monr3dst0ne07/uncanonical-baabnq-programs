@@ -1,0 +1,19 @@
+use 'libs/stack.baabnq';
+
+put _TestPrint::Counter = 0;
+jump Skip;
+    lab TestPrint;
+        print _TestPrint::Counter;
+        put _TestPrint::Counter = _TestPrint::Counter + 1;
+
+        return;
+
+lab Skip;
+
+
+
+sub TestPrint;          "0
+ sub TestPrint;         "1
+  sub TestPrint;        "2
+   sub TestPrint;       "3
+    sub TestPrint;      "4

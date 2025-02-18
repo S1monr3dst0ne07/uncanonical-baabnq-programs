@@ -1,0 +1,32 @@
+put _Input = 0;
+put _Temp  = 0;
+put _Ptr   = 5000;
+
+lab ReadInit;
+    put _Ptr = 5000;
+    
+lab ReadLoop;
+    input _Input;
+
+    jump PrintInit ~ _Input == 0;
+    put _Input -> _Ptr;
+    put _Ptr = _Ptr + 1;
+    jump ReadLoop;
+
+
+lab PrintInit;
+    put _Ptr = 5000;
+
+lab PrintLoop;
+    input _Input;
+
+    jump ReadInit ~ _Input == 0;
+    put _Temp <- _Ptr;    
+    put _Ptr = _Ptr + 1;
+
+    print _Temp;
+    print _Input;
+    jump PrintLoop;
+    
+
+

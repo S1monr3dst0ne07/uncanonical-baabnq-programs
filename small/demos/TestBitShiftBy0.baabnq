@@ -1,0 +1,4 @@
+put _a = 0;
+
+print 10 << _a;
+print 10 >> _a;

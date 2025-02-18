@@ -1,0 +1,23 @@
+print 9 + 10;
+
+static 'No! Its 21' _ptr;
+push _ptr;
+sub Display;
+
+
+
+jump End;
+
+
+lab Display;
+pull _r;
+pull _ptr;
+lab pntLoop;
+put _data <- _ptr;
+put _ptr = _ptr + 1;
+putchr _data;
+jump pntLoop ~ _data != 0;
+push _r;
+return;
+
+lab End;

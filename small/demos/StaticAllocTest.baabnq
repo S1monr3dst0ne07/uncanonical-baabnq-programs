@@ -1,0 +1,6 @@
+static 1000 _ptr;
+put _test = 5;
+
+put 0 -> _ptr + 1;
+
+print _test;

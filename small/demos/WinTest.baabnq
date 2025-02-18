@@ -1,0 +1,31 @@
+new 'Test Window' _TitlePtr;
+
+input _Limit;
+put _Index = 0;
+
+"title and window size
+push _TitlePtr;
+push 500;
+push 200;
+asm 'plugin Screen::WinInit';
+
+
+
+
+lab RenderLoop;
+
+
+"pixel position and color
+push 0;
+push 0;
+push 0;
+push _Index;
+push _Index;
+asm 'plugin Screen::Draw';
+asm 'plugin Screen::Update';
+
+put _Index = _Index + 1;
+jump RenderLoop ~ _Index < _Limit;
+
+
+asm 'plugin Screen::WinExit';
