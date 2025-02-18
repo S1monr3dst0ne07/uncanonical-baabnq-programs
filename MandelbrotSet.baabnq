@@ -1,0 +1,133 @@
+
+"!!! THIS IS DEPED !!!
+
+
+use 'libs/math.baabnq';
+use 'libs/stack.baabnq';
+use 'libs/float.baabnq'; 
+
+put _cx = 0;
+put _cy = 0;
+put _x  = 0;
+put _y  = 0;
+put _x2 = 0;
+put _y2 = 0;
+
+put _iter = 0;
+
+put _xmin    = (8601 ^ (0 - 1)) + 1;
+put _xmax    = 2867;
+put _ymin    = (4915 ^ (0 - 1)) + 1;
+put _ymax    = 4915;
+put _maxiter = 0;
+put _dx      = 0;
+put _dy      = 0;
+
+put _maxiter = 32;
+
+put _dx = 145;
+put _dy = 409;
+
+
+put _cy = _ymin;
+lab While1;
+    jump Exit1 ~ (_ymax - _cy) >> 15 == 1;
+    put _cx = _xmin;
+    
+    lab While2;
+        jump Exit2 ~ (_xmax - _cx) >> 15 == 1;
+        
+        push 0;
+        sub Floats::Value2Fp;
+        sub Stack::Dup;
+        sub Stack::Dup;
+        sub Stack::Dup;
+
+        pull _x;
+        pull _y;
+        pull _x2;
+        pull _y2;
+
+        put _iter = 0;        
+        lab While3;
+            jump Exit3 ~ _iter > _maxiter;
+                  
+
+            push _x2;
+            push _y2; 
+            sub Floats::Add;
+            push 16384;
+            sub Floats::Value2Fp;
+            sub Floats::Comp;
+            pull _temp;
+            jump Exit3 ~ _temp == 1;
+
+            "y = ((x * y) >> 11) + cy
+            push _x;
+            push _y;
+            sub Floats::Mul;
+            push 11;
+            sub Floats::Value2Fp;
+            sub Floats::ShiftSmall;
+            push _cy;
+            sub Floats::TwoC2Fp; "(float)_cy
+            sub Floats::Add;
+            pull _y;
+
+            "x = (x2 - y2) + cx
+            push _x2;
+            push _y2 | _SIGN_MASK;
+            sub Floats::Add;
+            push _cx;
+            sub Floats::TwoC2Fp; "(float)_cx
+            sub Floats::Add;
+            pull _x;
+
+            "x2 = (x * x) >> 12
+            push _x;
+            push _x;
+            sub Floats::Mul;
+            push 12;
+            sub Floats::Value2Fp;
+            sub Floats::ShiftSmall;
+            pull _x2;
+
+            
+            "y2 = (y * y) >> 12
+            push _y;
+            push _y;
+            sub Floats::Mul;
+            push 12;
+            sub Floats::Value2Fp;
+            sub Floats::ShiftSmall;
+            pull _y2;
+
+
+            put _iter = _iter + 1;
+            jump While3;
+        lab Exit3;
+        
+        putchr _iter + 32;
+        
+        put _cx = _cx + _dx;
+        
+    jump While2;
+    lab Exit2;
+
+    putchr 10;
+    put _cy = _cy + _dy;
+
+
+    jump While1;
+lab Exit1;
+
+
+
+
+
+
+
+
+
+
+
