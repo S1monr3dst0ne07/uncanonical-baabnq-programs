@@ -1,0 +1,40 @@
+use 'libs/stack.baabnq';
+use 'libs/string.baabnq';
+
+
+jump Skip;
+
+
+    "waits for a string to be typed into stdin followed by a return
+    "the string is being buffered on the stack, because it's not know how long it is
+    "after the string ended the stack will be read and moved into dynamic memory
+    "and at the end the routine will return a point to that string in memory
+    lab AwaitStr;
+        asm 'plugin Terminal::Input';
+        pull _AwaitStr::StringLength;
+        
+        new _AwaitStr::StringLength _AwaitStr::StringPtr;
+        
+        put _AwaitStr::Index = 0;
+        lab AwaitStr::CopyString;
+            pull _AwaitStr::Data;
+            jump AwaitStr::Exit ~ _AwaitStr::Data == 0;
+            put _AwaitStr::Data -> _AwaitStr::StringPtr + _AwaitStr::Index;
+            put _AwaitStr::Index = _AwaitStr::Index + 1;
+            jump AwaitStr::CopyString;
+        lab AwaitStr::Exit;
+        push _AwaitStr::StringPtr;
+        sub Stack::Swap;
+        return;        
+
+
+
+lab Skip;
+
+new 'toki. jan ' _MsgPtr;
+push _MsgPtr;
+
+sub AwaitStr;
+sub String::Concat;
+
+sub String::PrintString;
